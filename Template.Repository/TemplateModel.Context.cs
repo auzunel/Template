@@ -13,10 +13,10 @@ namespace Template.Repository
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class UserFrameEntities : DbContext
+    public partial class TemplateEntities : DbContext
     {
-        public UserFrameEntities()
-            : base("name=UserFrameEntities")
+        public TemplateEntities()
+            : base("name=TemplateEntities")
         {
         }
     
@@ -26,8 +26,8 @@ namespace Template.Repository
         }
     
         public virtual DbSet<Roles> Roles { get; set; }
-        public virtual DbSet<UserMembership> UserMembership { get; set; }
+        public virtual DbSet<User> User { get; set; }
+        public virtual DbSet<UserManagement> UserManagement { get; set; }
         public virtual DbSet<UserRoles> UserRoles { get; set; }
-        public virtual DbSet<Users> Users { get; set; }
     }
 }

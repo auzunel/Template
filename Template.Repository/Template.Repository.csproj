@@ -73,13 +73,13 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>TemplateModel.edmx</DependentUpon>
     </Compile>
-    <Compile Include="UserMembership.cs">
+    <Compile Include="User.cs">
+      <DependentUpon>TemplateModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserManagement.cs">
       <DependentUpon>TemplateModel.tt</DependentUpon>
     </Compile>
     <Compile Include="UserRoles.cs">
-      <DependentUpon>TemplateModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Users.cs">
       <DependentUpon>TemplateModel.tt</DependentUpon>
     </Compile>
   </ItemGroup>

@@ -15,10 +15,10 @@ namespace Template.Repository
     public partial class UserRoles
     {
         public int Id { get; set; }
-        public int UserId { get; set; }
+        public System.Guid UserId { get; set; }
         public int RoleId { get; set; }
     
         public virtual Roles Roles { get; set; }
-        public virtual Users Users { get; set; }
+        public virtual User User { get; set; }
     }
 }

@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="UserFrameModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="TemplateModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Roles">
           <Key>
             <PropertyRef Name="Id" />
@@ -12,23 +12,39 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="RoleName" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="CreatedOn" Type="datetime" Nullable="false" />
-          <Property Name="CreatedBy" Type="int" Nullable="false" />
+          <Property Name="CreatedBy" Type="uniqueidentifier" Nullable="false" />
           <Property Name="ModifiedOn" Type="datetime" />
-          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="ModifiedBy" Type="uniqueidentifier" />
         </EntityType>
-        <EntityType Name="UserMembership">
+        <EntityType Name="User">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" />
-          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="MiddleName" Type="nvarchar" MaxLength="50" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="IsActive" Type="nchar" MaxLength="10" />
+          <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="ModifiedBy" Type="uniqueidentifier" />
+        </EntityType>
+        <EntityType Name="UserManagement">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="uniqueidentifier" Nullable="false" />
           <Property Name="PasswordHash" Type="nvarchar" MaxLength="90" Nullable="false" />
           <Property Name="PasswordSalt" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="IsLocked" Type="bit" Nullable="false" />
+          <Property Name="WrongAttempt" Type="int" Nullable="false" />
           <Property Name="CreatedOn" Type="datetime" Nullable="false" />
-          <Property Name="CreatedBy" Type="int" Nullable="false" />
+          <Property Name="CreatedBy" Type="uniqueidentifier" Nullable="false" />
           <Property Name="ModifiedOn" Type="datetime" />
-          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="ModifiedBy" Type="uniqueidentifier" />
           <Property Name="Timestamp" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
         </EntityType>
         <EntityType Name="UserRoles">
@@ -36,32 +52,17 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="UserId" Type="uniqueidentifier" Nullable="false" />
           <Property Name="RoleId" Type="int" Nullable="false" />
         </EntityType>
-        <EntityType Name="Users">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Email" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="FirstName" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="MiddleName" Type="nvarchar" MaxLength="50" />
-          <Property Name="LastName" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="IsActive" Type="bit" Nullable="false" />
-          <Property Name="CreatedOn" Type="datetime" Nullable="false" />
-          <Property Name="CreatedBy" Type="int" Nullable="false" />
-          <Property Name="ModifiedOn" Type="datetime" />
-          <Property Name="ModifiedBy" Type="int" />
-        </EntityType>
         <Association Name="FK_UserManagement_User">
-          <End Role="Users" Type="Self.Users" Multiplicity="1" />
-          <End Role="UserMembership" Type="Self.UserMembership" Multiplicity="*" />
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="UserManagement" Type="Self.UserManagement" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Users">
+            <Principal Role="User">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="UserMembership">
+            <Dependent Role="UserManagement">
               <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
@@ -79,10 +80,10 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_UserRoles_Users">
-          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="User" Type="Self.User" Multiplicity="1" />
           <End Role="UserRoles" Type="Self.UserRoles" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Users">
+            <Principal Role="User">
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="UserRoles">
@@ -90,21 +91,21 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="UserFrameModelStoreContainer">
+        <EntityContainer Name="TemplateModelStoreContainer">
           <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="UserMembership" EntityType="Self.UserMembership" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserManagement" EntityType="Self.UserManagement" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserRoles" EntityType="Self.UserRoles" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_UserManagement_User" Association="Self.FK_UserManagement_User">
-            <End Role="Users" EntitySet="Users" />
-            <End Role="UserMembership" EntitySet="UserMembership" />
+            <End Role="User" EntitySet="User" />
+            <End Role="UserManagement" EntitySet="UserManagement" />
           </AssociationSet>
           <AssociationSet Name="FK_UserRoles_Roles" Association="Self.FK_UserRoles_Roles">
             <End Role="Roles" EntitySet="Roles" />
             <End Role="UserRoles" EntitySet="UserRoles" />
           </AssociationSet>
           <AssociationSet Name="FK_UserRoles_Users" Association="Self.FK_UserRoles_Users">
-            <End Role="Users" EntitySet="Users" />
+            <End Role="User" EntitySet="User" />
             <End Role="UserRoles" EntitySet="UserRoles" />
           </AssociationSet>
         </EntityContainer>
@@ -112,7 +113,7 @@
     </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="UserFrameModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <Schema Namespace="TemplateModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="Roles">
           <Key>
             <PropertyRef Name="Id" />
@@ -120,53 +121,54 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="RoleName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
+          <Property Name="CreatedBy" Type="Guid" Nullable="false" />
           <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
-          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedBy" Type="Guid" />
           <NavigationProperty Name="UserRoles" Relationship="Self.FK_UserRoles_Roles" FromRole="Roles" ToRole="UserRoles" />
         </EntityType>
-        <EntityType Name="UserMembership">
+        <EntityType Name="User">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
-          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="MiddleName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="IsActive" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="Guid" Nullable="false" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="Guid" />
+          <NavigationProperty Name="UserManagement" Relationship="Self.FK_UserManagement_User" FromRole="User" ToRole="UserManagement" />
+          <NavigationProperty Name="UserRoles" Relationship="Self.FK_UserRoles_Users" FromRole="User" ToRole="UserRoles" />
+        </EntityType>
+        <EntityType Name="UserManagement">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Guid" Nullable="false" />
           <Property Name="PasswordHash" Type="String" MaxLength="90" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="PasswordSalt" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="IsLocked" Type="Boolean" Nullable="false" />
+          <Property Name="WrongAttempt" Type="Int32" Nullable="false" />
           <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
+          <Property Name="CreatedBy" Type="Guid" Nullable="false" />
           <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
-          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedBy" Type="Guid" />
           <Property Name="Timestamp" Type="Binary" MaxLength="8" FixedLength="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
-          <NavigationProperty Name="Users" Relationship="Self.FK_UserManagement_User" FromRole="UserMembership" ToRole="Users" />
+          <NavigationProperty Name="User" Relationship="Self.FK_UserManagement_User" FromRole="UserManagement" ToRole="User" />
         </EntityType>
         <EntityType Name="UserRoles">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="UserId" Type="Guid" Nullable="false" />
           <Property Name="RoleId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Roles" Relationship="Self.FK_UserRoles_Roles" FromRole="UserRoles" ToRole="Roles" />
-          <NavigationProperty Name="Users" Relationship="Self.FK_UserRoles_Users" FromRole="UserRoles" ToRole="Users" />
-        </EntityType>
-        <EntityType Name="Users">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="MiddleName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="IsActive" Type="Boolean" Nullable="false" />
-          <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
-          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
-          <Property Name="ModifiedBy" Type="Int32" />
-          <NavigationProperty Name="UserMembership" Relationship="Self.FK_UserManagement_User" FromRole="Users" ToRole="UserMembership" />
-          <NavigationProperty Name="UserRoles" Relationship="Self.FK_UserRoles_Users" FromRole="Users" ToRole="UserRoles" />
+          <NavigationProperty Name="User" Relationship="Self.FK_UserRoles_Users" FromRole="UserRoles" ToRole="User" />
         </EntityType>
         <Association Name="FK_UserRoles_Roles">
           <End Role="Roles" Type="Self.Roles" Multiplicity="1" />
@@ -181,22 +183,22 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_UserManagement_User">
-          <End Role="Users" Type="Self.Users" Multiplicity="1" />
-          <End Role="UserMembership" Type="Self.UserMembership" Multiplicity="*" />
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="UserManagement" Type="Self.UserManagement" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Users">
+            <Principal Role="User">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="UserMembership">
+            <Dependent Role="UserManagement">
               <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_UserRoles_Users">
-          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="User" Type="Self.User" Multiplicity="1" />
           <End Role="UserRoles" Type="Self.UserRoles" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Users">
+            <Principal Role="User">
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="UserRoles">
@@ -204,21 +206,21 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="UserFrameEntities" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="TemplateEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Roles" EntityType="Self.Roles" />
-          <EntitySet Name="UserMembership" EntityType="Self.UserMembership" />
+          <EntitySet Name="User" EntityType="Self.User" />
+          <EntitySet Name="UserManagement" EntityType="Self.UserManagement" />
           <EntitySet Name="UserRoles" EntityType="Self.UserRoles" />
-          <EntitySet Name="Users" EntityType="Self.Users" />
           <AssociationSet Name="FK_UserRoles_Roles" Association="Self.FK_UserRoles_Roles">
             <End Role="Roles" EntitySet="Roles" />
             <End Role="UserRoles" EntitySet="UserRoles" />
           </AssociationSet>
           <AssociationSet Name="FK_UserManagement_User" Association="Self.FK_UserManagement_User">
-            <End Role="Users" EntitySet="Users" />
-            <End Role="UserMembership" EntitySet="UserMembership" />
+            <End Role="User" EntitySet="User" />
+            <End Role="UserManagement" EntitySet="UserManagement" />
           </AssociationSet>
           <AssociationSet Name="FK_UserRoles_Users" Association="Self.FK_UserRoles_Users">
-            <End Role="Users" EntitySet="Users" />
+            <End Role="User" EntitySet="User" />
             <End Role="UserRoles" EntitySet="UserRoles" />
           </AssociationSet>
         </EntityContainer>
@@ -227,9 +229,9 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="UserFrameModelStoreContainer" CdmEntityContainer="UserFrameEntities">
+        <EntityContainerMapping StorageEntityContainer="TemplateModelStoreContainer" CdmEntityContainer="TemplateEntities">
           <EntitySetMapping Name="Roles">
-            <EntityTypeMapping TypeName="UserFrameModel.Roles">
+            <EntityTypeMapping TypeName="TemplateModel.Roles">
               <MappingFragment StoreEntitySet="Roles">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="RoleName" ColumnName="RoleName" />
@@ -240,34 +242,9 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="UserMembership">
-            <EntityTypeMapping TypeName="UserFrameModel.UserMembership">
-              <MappingFragment StoreEntitySet="UserMembership">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
-                <ScalarProperty Name="PasswordSalt" ColumnName="PasswordSalt" />
-                <ScalarProperty Name="IsLocked" ColumnName="IsLocked" />
-                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="UserRoles">
-            <EntityTypeMapping TypeName="UserFrameModel.UserRoles">
-              <MappingFragment StoreEntitySet="UserRoles">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Users">
-            <EntityTypeMapping TypeName="UserFrameModel.Users">
-              <MappingFragment StoreEntitySet="Users">
+          <EntitySetMapping Name="User">
+            <EntityTypeMapping TypeName="TemplateModel.User">
+              <MappingFragment StoreEntitySet="User">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
@@ -278,6 +255,32 @@
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserManagement">
+            <EntityTypeMapping TypeName="TemplateModel.UserManagement">
+              <MappingFragment StoreEntitySet="UserManagement">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="PasswordSalt" ColumnName="PasswordSalt" />
+                <ScalarProperty Name="IsLocked" ColumnName="IsLocked" />
+                <ScalarProperty Name="WrongAttempt" ColumnName="WrongAttempt" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserRoles">
+            <EntityTypeMapping TypeName="TemplateModel.UserRoles">
+              <MappingFragment StoreEntitySet="UserRoles">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
