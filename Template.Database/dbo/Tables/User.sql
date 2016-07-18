@@ -4,7 +4,7 @@
     [FirstName]  NVARCHAR (50) NOT NULL,
     [MiddleName] NVARCHAR (50) NULL,
     [LastName]   NVARCHAR (50) NOT NULL,
-	[IsActive] NCHAR(10) NULL,
+	[IsActive] BIT NOT NULL,
     [CreatedOn]  DATETIME      NOT NULL,
     [CreatedBy]  UNIQUEIDENTIFIER           NOT NULL,
     [ModifiedOn] DATETIME      NULL,

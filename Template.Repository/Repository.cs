@@ -15,7 +15,7 @@ namespace Template.Repository
 
         public Repository()
         {
-            _context = new UserFrameEntities();
+            _context = new TemplateEntities();
         }
 
         public IList<TResult> GetAll<TResult>(Func<TEntity, TResult> select = null) where TResult : new()

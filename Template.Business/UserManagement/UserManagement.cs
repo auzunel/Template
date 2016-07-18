@@ -16,17 +16,17 @@ namespace Template.Business.Security
         public static CustomIdentity Login(string email, string password)
         {
             using(var lifetimescope = IoCContainer.BeginLifetimeScope())
-            using (var repository = lifetimescope.Resolve<IRepository<Users>>())
+            using (var repository = lifetimescope.Resolve<IRepository<User>>())
             {
                 try
                 {
-                    var existingUser = repository.GetSingle<Users>(x =>
+                    var existingUser = repository.GetSingle<User>(x =>
                         x.Email.Equals(email, StringComparison.InvariantCultureIgnoreCase) &&
-                        x.UserMembership.Any());
+                        x.UserManagement.Any());
 
                     if (existingUser != null)
                     {
-                        var correctPassword = BCryptHelper.CheckPassword(password, existingUser.UserMembership.FirstOrDefault().PasswordHash);
+                        var correctPassword = BCryptHelper.CheckPassword(password, existingUser.UserManagement.FirstOrDefault().PasswordHash);
                         if(correctPassword)
                             return new CustomIdentity(true, existingUser.Email) 
                             { 
@@ -53,28 +53,28 @@ namespace Template.Business.Security
         public static bool Register(string email, string password)
         {
             using(var lifetimescope = IoCContainer.BeginLifetimeScope())
-            using (var repository = lifetimescope.Resolve<IRepository<Users>>())
+            using (var repository = lifetimescope.Resolve<IRepository<User>>())
             {
                 try
                 {
-                    var user = new Users
+                    var user = new Template.Repository.User
                     {
                         Email = "auzunel@hotmail.com",
                         FirstName = "Ali",
                         LastName = "Uzunel",
                         IsActive = true,
                         CreatedOn = DateTime.UtcNow,
-                        CreatedBy = 1
+                        CreatedBy = Guid.NewGuid()
                     };
 
                     var salt = BCryptHelper.GenerateSalt();
-                    user.UserMembership.Add(new UserMembership
+                    user.UserManagement.Add(new Template.Repository.UserManagement
                     {
                         PasswordSalt = salt,
                         PasswordHash = BCryptHelper.HashPassword(password, salt),
                         IsLocked = false,
                         CreatedOn = DateTime.UtcNow,
-                        CreatedBy = 1
+                        CreatedBy = Guid.NewGuid()
                     });
 
                     user.UserRoles.Add(new UserRoles
@@ -108,13 +108,13 @@ namespace Template.Business.Security
         public static CustomIdentity Load(string email)
         {
             using (var lifetimescope = IoCContainer.BeginLifetimeScope())
-            using (var repository = lifetimescope.Resolve<IRepository<Users>>())
+            using (var repository = lifetimescope.Resolve<IRepository<User>>())
             {
                 try
                 {
-                    var existingUser = repository.GetSingle<Users>(x =>
+                    var existingUser = repository.GetSingle<User>(x =>
                         x.Email.Equals(email, StringComparison.InvariantCultureIgnoreCase) &&
-                        x.UserMembership.Any());
+                        x.UserManagement.Any());
 
                     if (existingUser != null)
                     {

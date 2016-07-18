@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="f3e3f869aff24cdfa444ddfb2a9cb883" Name="Diagram1">
+      <Diagram DiagramId="c66f8e62639b428b8dbcc6b7c1ddfac7" Name="Diagram1">
         <EntityTypeShape EntityType="TemplateModel.Roles" Width="1.5" PointX="3.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="TemplateModel.User" Width="1.5" PointX="0.75" PointY="4.25" IsExpanded="true" />
         <EntityTypeShape EntityType="TemplateModel.UserManagement" Width="1.5" PointX="3" PointY="4.25" IsExpanded="true" />

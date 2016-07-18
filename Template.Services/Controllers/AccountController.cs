@@ -29,22 +29,22 @@ namespace Template.Services.Controllers
         {
             try
             {
-                if (!ModelState.IsValid)
-                {
-                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
-                }
-
                 //var model = new LoginRequestModel { 
                 //    Email = "auzunel@HOtmail.com",
                 //    Password = "1234",
                 //    CookieName = FormsAuthentication.FormsCookieName
                 //};
 
+                if (!ModelState.IsValid)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
+                }
+
                 if (CustomPrincipal.Login(model.Email, model.Password))
                 {
                     var serializer = new JavaScriptSerializer();
 
-                    var userRoleData = serializer.Serialize(((CustomIdentity)HttpContext.Current.User.Identity).Roles);
+                    //var userRoleData = serializer.Serialize(((CustomIdentity)HttpContext.Current.User.Identity).Roles);
                     var userData = serializer.Serialize(new
                     {
                         Identity = new

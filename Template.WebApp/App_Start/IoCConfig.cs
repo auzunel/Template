@@ -15,15 +15,6 @@ namespace Template.WebApp.App_Start
             var builder = new ContainerBuilder();
             builder.RegisterControllers(typeof(MvcApplication).Assembly);
 
-            //Database.SetInitializer(new MigrateDatabaseToLatestVersion<DefaultMembershipRebootDatabase, Configuration>());
-
-            //builder.RegisterInstance(config).As<MembershipRebootConfiguration>();
-            //builder.RegisterType<UserAccountService>().AsSelf();
-            //builder.RegisterType<SamAuthenticationService>().As<AuthenticationService>();
-            //builder.RegisterType<DefaultUserAccountRepository>().As<IUserAccountQuery>().InstancePerRequest();
-            //builder.RegisterType<DefaultUserAccountRepository>().As<IUserAccountRepository>().InstancePerRequest();
-            //builder.RegisterGeneric(typeof(EfRepository<>)).As(typeof(IGenericRepository<>));
-
             var container = builder.Build();
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
         }
