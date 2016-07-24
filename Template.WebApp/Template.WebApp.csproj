@@ -244,16 +244,16 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Template.ServicesClient\Template.ServiceClient.csproj">
-      <Project>{986152c0-107d-4ba1-969f-fe6c776d337f}</Project>
-      <Name>Template.ServiceClient</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="ServiceLinks.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ServiceLinks.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Template.ServiceClient\Template.ServiceClient.csproj">
+      <Project>{0eed3425-23a9-48ba-98c7-11f5b6b32767}</Project>
+      <Name>Template.ServiceClient</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -21,7 +21,7 @@ namespace Template.ServiceClient
         private readonly HttpClient _httpClient;
         private static readonly JavaScriptSerializer Serializer = new JavaScriptSerializer();
 
-        public ServicesClient(): this(null)
+        public ServicesClient() : this(null)
         {
         }
 
