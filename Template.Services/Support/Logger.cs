@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Template.Business.Support
+namespace Template.Services.Support
 {
     public class Logger
     {

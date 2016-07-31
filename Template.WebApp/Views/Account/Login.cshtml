@@ -31,12 +31,12 @@
             @Html.AntiForgeryToken()
             <div class="row">
                 <div class="col-md-6">
-                    @Html.TextBoxFor(m => m.UserName, new { @class = "form-control form-control-solid placeholder-no-fix", placeholder = "UserName" })
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control form-control-solid placeholder-no-fix", placeholder = "UserName" })
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6">
-                    @Html.TextBoxFor(m => m.Password, new { @class = "form-control form-control-solid placeholder-no-fix", placeholder = "Password" })
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control form-control-solid placeholder-no-fix", placeholder = "Password" })
                     @Html.ValidationMessageFor(model => model.Password)
                 </div>
             </div>

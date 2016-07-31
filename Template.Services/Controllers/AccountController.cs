@@ -19,7 +19,7 @@ namespace Template.Services.Controllers
 {
     public class AccountController : ApiController
     {
-        
+
         //[HttpGet]
         //[ActionName("Login")]
         //public HttpResponseMessage Login()
@@ -29,7 +29,8 @@ namespace Template.Services.Controllers
         {
             try
             {
-                //var model = new LoginRequestModel { 
+                //var model = new LoginRequestModel
+                //{
                 //    Email = "auzunel@HOtmail.com",
                 //    Password = "1234",
                 //    CookieName = FormsAuthentication.FormsCookieName
@@ -47,20 +48,16 @@ namespace Template.Services.Controllers
                     //var userRoleData = serializer.Serialize(((CustomIdentity)HttpContext.Current.User.Identity).Roles);
                     var userData = serializer.Serialize(new
                     {
-                        Identity = new
-                        {
-                            ((CustomIdentity)HttpContext.Current.User.Identity).AuthenticationType,
-                            ((CustomIdentity)HttpContext.Current.User.Identity).LastPasswordChange,
-                            ((CustomIdentity)HttpContext.Current.User.Identity).CreatedOn,
-                            ((CustomIdentity)HttpContext.Current.User.Identity).UserId,
-                            ((CustomIdentity)HttpContext.Current.User.Identity).UserRoleType,
-                            ((CustomIdentity)HttpContext.Current.User.Identity).UserRoleTypeId,
-                            ((CustomIdentity)HttpContext.Current.User.Identity).Name,
-                            ((CustomIdentity)HttpContext.Current.User.Identity).IsAuthenticated,
-                            ((CustomIdentity)HttpContext.Current.User.Identity).Email,
-                            ((CustomIdentity)HttpContext.Current.User.Identity).UserName,
-                            ((CustomIdentity)HttpContext.Current.User.Identity).RememberMe
-                        }
+                        ((CustomIdentity)HttpContext.Current.User.Identity).AuthenticationType,
+                        ((CustomIdentity)HttpContext.Current.User.Identity).IsAuthenticated,
+                        ((CustomIdentity)HttpContext.Current.User.Identity).LastPasswordChange,
+                        ((CustomIdentity)HttpContext.Current.User.Identity).CreatedOn,
+                        ((CustomIdentity)HttpContext.Current.User.Identity).UserId,
+                        ((CustomIdentity)HttpContext.Current.User.Identity).Name,     
+                        ((CustomIdentity)HttpContext.Current.User.Identity).Email,
+                        ((CustomIdentity)HttpContext.Current.User.Identity).RememberMe,
+                        ((CustomIdentity)HttpContext.Current.User.Identity).Roles,
+                        ((CustomIdentity)HttpContext.Current.User.Identity).IsActive
                     });
 
                     // isPersistent = true, remember me function

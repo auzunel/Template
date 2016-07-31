@@ -63,10 +63,10 @@
     <Folder Include="dbo\Tables\" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="dbo\Tables\User.sql" />
-    <Build Include="dbo\Tables\UserManagement.sql" />
     <Build Include="dbo\Tables\Roles.sql" />
+    <Build Include="dbo\Tables\UserMembership.sql" />
     <Build Include="dbo\Tables\UserRoles.sql" />
+    <Build Include="dbo\Tables\Users.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Template.Database.publish.xml" />

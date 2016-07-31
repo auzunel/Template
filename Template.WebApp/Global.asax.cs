@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Threading;
 using System.Web;
 using System.Web.Helpers;
 using System.Web.Http;
@@ -9,18 +10,16 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using System.Web.Security;
-using Template.ServiceClient;
+using System.Web.SessionState;
 using Template.WebApp.App_Start;
 using Template.WebApp.Support;
 
 namespace Template.WebApp
 {
-    // Note: For instructions on enabling IIS6 or IIS7 classic mode, 
-    // visit http://go.microsoft.com/?LinkId=9394801
-
     public class MvcApplication : System.Web.HttpApplication
     {
-        protected void Application_Start()
+
+        protected void Application_Start(object sender, EventArgs e)
         {
             IoCConfig.RegisterDependencies();
 
@@ -30,58 +29,23 @@ namespace Template.WebApp
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-
             AntiForgeryConfig.CookieName = "__RequestVerificationTemplateToken";
-            ServicesClient.CookieName = FormsAuthentication.FormsCookieName;
             ValueProviderFactories.Factories.Add(new JsonValueProviderFactory());
+        }
 
-            //Logger.LogEvent("Application_Start");
+        protected void Session_Start(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void Application_BeginRequest(object sender, EventArgs e)
+        {
+
         }
 
         protected void Application_AuthenticateRequest(object sender, EventArgs e)
         {
-            // If there is a problem; logout, clear session and cookies
-            try
-            {
-                var authCookie = Request.Cookies[FormsAuthentication.FormsCookieName];
-                var roleCookie = Request.Cookies[FormsAuthentication.FormsCookieName + AuthenticationCookieHelper.RoleCookieExt];
-                if (authCookie == null || roleCookie == null)
-                {
-                    return;
-                }
-
-                var authTicket = FormsAuthentication.Decrypt(authCookie.Value);
-
-                var cookieNameList = Request.Cookies.Keys;
-                var cookieList = new List<HttpCookie>();
-                foreach (string cookieName in cookieNameList)
-                {
-                    cookieList.Add(Request.Cookies[cookieName]);
-                }
-
-                var roleTicket = AuthenticationCookieHelper.RebuildAuthTicket(cookieList, roleCookie);
-                var encyRoleTicket = FormsAuthentication.Decrypt(roleTicket);
-
-
-                Context.User = ServicesClient.CreatePrincipalFromCookie(authTicket, encyRoleTicket);
-            }
-            catch (Exception exception)
-            {
-                Logger.LogEvent(exception.Message, exception);
-                FormsAuthentication.SignOut();
-
-                var session = HttpContext.Current.Session;
-
-                if (session != null)
-                {
-                    Session.Abandon();
-                }
-                string[] cookies = Request.Cookies.AllKeys;
-                foreach (var cookieName in cookies)
-                {
-                    Response.Cookies[cookieName].Expires = DateTime.Now.AddDays(-1);
-                }
-            }
+            
         }
 
         protected void Application_Error(object sender, EventArgs e)
@@ -129,10 +93,20 @@ namespace Template.WebApp
                     Response.Redirect(u.Action("Error401", "Error"));
                     break;
                 default:
-                    Logger.LogEvent(exception.Message, exception);
+                    Logger.LogEvent("Global.asax", ex);
                     Response.Redirect(u.Action("Error500", "Error"));
                     break;
             }
+        }
+
+        protected void Session_End(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void Application_End(object sender, EventArgs e)
+        {
+
         }
     }
 }

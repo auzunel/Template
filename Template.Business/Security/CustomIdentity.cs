@@ -22,11 +22,8 @@ namespace Template.Business.Security
         public DateTime CreatedOn { get; set; }
         public bool IsLockedOut { get; set; }
         public List<string> Roles { get; set; }
-        public string UserRoleType { get; set; }
-        public int? UserRoleTypeId { get; set; }
-        public int? UserId { get; set; }
+        public Guid UserId { get; set; }
         public string Email { get; set; }
-        public string UserName { get; set; }
         public bool RememberMe { get; set; }
         public bool IsActive { get; set; }
 

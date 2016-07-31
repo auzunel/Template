@@ -7,11 +7,12 @@ using System.Net.Http.Formatting;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using Template.ServiceClient;
+using System.Web.Security;
 using Template.WebApp.Attributes;
 using Template.WebApp.Controllers.Base;
 using Template.WebApp.Models;
 using Template.WebApp.Models.Account;
+using Template.WebApp.Support;
 
 namespace Template.WebApp.Controllers
 {
@@ -29,8 +30,10 @@ namespace Template.WebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                using (var servicesClient = new ServicesClient())
+                using (var servicesClient = new ServiceClient())
                 {
+                    model.CookieName = FormsAuthentication.FormsCookieName;
+
                     var postData = new ObjectContent(model.GetType(), model, new JsonMediaTypeFormatter());
                     var response = await servicesClient.Client.PostAsync(ServiceLinks.Login, postData);
 
@@ -48,18 +51,20 @@ namespace Template.WebApp.Controllers
                         return View();
                     }
 
-                    var authTicket = servicesClient.GetAuthTicket(ServiceLinks.Login, response);
-                    var roleTicket = servicesClient.GetRoleTicket(ServiceLinks.Login, response);
-                    var customPrincipal = ServicesClient.CreatePrincipalFromCookie(authTicket, roleTicket);
+                    servicesClient.GetCookie(ServiceLinks.Login);
 
-                    System.Web.HttpContext.Current.User = customPrincipal;
+                    //var authTicket = servicesClient.GetAuthTicket(ServiceLinks.Login, response);
+                    //var roleTicket = servicesClient.GetRoleTicket(ServiceLinks.Login, response);
+                    //var customPrincipal = ServicesClient.CreatePrincipalFromCookie(authTicket, roleTicket);
 
-                    Response.Cookies.Add(servicesClient.GetEncryptedAuthCookie(authTicket));
-                    var roleCookies = servicesClient.GetEncryptedRoleCookie(roleTicket);
-                    foreach (var cookie in roleCookies)
-                    {
-                        Response.Cookies.Add(cookie);
-                    }
+                    //System.Web.HttpContext.Current.User = customPrincipal;
+
+                    //Response.Cookies.Add(servicesClient.GetEncryptedAuthCookie(authTicket));
+                    //var roleCookies = servicesClient.GetEncryptedRoleCookie(roleTicket);
+                    //foreach (var cookie in roleCookies)
+                    //{
+                    //    Response.Cookies.Add(cookie);
+                    //}
                 }
             }
 

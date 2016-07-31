@@ -37,11 +37,6 @@ namespace Template.Services.Security
             return ((CustomIdentity)Identity).Roles.Any(r => r == role);
         }
 
-        public string GetUserRoleType()
-        {
-            return ((CustomIdentity)Identity).UserRoleType;
-        }
-
         private static bool SetPrincipal(IIdentity identity)
         {
             if (identity.IsAuthenticated)

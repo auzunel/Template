@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Autofac;
 using Template.Repository;
 using DevOne.Security.Cryptography.BCrypt;
-using Template.Business.Support;
 using System.Data.Entity.Validation;
 
 namespace Template.Business.Security
@@ -22,16 +21,18 @@ namespace Template.Business.Security
                 {
                     var existingUser = repository.GetSingle<User>(x =>
                         x.Email.Equals(email, StringComparison.InvariantCultureIgnoreCase) &&
-                        x.UserManagement.Any());
+                        x.UserMemberships.Any());
 
                     if (existingUser != null)
                     {
-                        var correctPassword = BCryptHelper.CheckPassword(password, existingUser.UserManagement.FirstOrDefault().PasswordHash);
+                        var correctPassword = BCryptHelper.CheckPassword(password, existingUser.UserMemberships.FirstOrDefault().PasswordHash);
                         if(correctPassword)
                             return new CustomIdentity(true, existingUser.Email) 
                             { 
-                                Roles = existingUser.UserRoles.Select(x => x.Roles.RoleName).ToList(),
-                                IsActive = existingUser.IsActive
+                                Roles = existingUser.UserRoles.Select(x => x.Role.RoleName).ToList(),
+                                IsActive = existingUser.IsActive,
+                                Email = existingUser.Email,
+                                UserId = existingUser.Id
                             };
                         else
                             return new CustomIdentity(false, String.Empty);
@@ -44,7 +45,6 @@ namespace Template.Business.Security
                 }
                 catch (Exception e)
                 {
-                    Logger.LogEvent("GetIdentity", e);
                     return new CustomIdentity(false, String.Empty);
                 }
             }
@@ -68,7 +68,7 @@ namespace Template.Business.Security
                     };
 
                     var salt = BCryptHelper.GenerateSalt();
-                    user.UserManagement.Add(new Template.Repository.UserManagement
+                    user.UserMemberships.Add(new Template.Repository.UserMembership
                     {
                         PasswordSalt = salt,
                         PasswordHash = BCryptHelper.HashPassword(password, salt),
@@ -77,7 +77,7 @@ namespace Template.Business.Security
                         CreatedBy = Guid.NewGuid()
                     });
 
-                    user.UserRoles.Add(new UserRoles
+                    user.UserRoles.Add(new UserRole
                     {
                         RoleId = 1
                     });
@@ -86,8 +86,7 @@ namespace Template.Business.Security
                 }
                 catch (Exception e)
                 {
-                    Logger.LogEvent("UserManagement.Register", e);
-                    return false;
+                    throw;
                 }
                 //catch (DbEntityValidationException e)
                 //{
@@ -114,13 +113,13 @@ namespace Template.Business.Security
                 {
                     var existingUser = repository.GetSingle<User>(x =>
                         x.Email.Equals(email, StringComparison.InvariantCultureIgnoreCase) &&
-                        x.UserManagement.Any());
+                        x.UserMemberships.Any());
 
                     if (existingUser != null)
                     {
                         return new CustomIdentity(true, existingUser.Email)
                         {
-                            Roles = existingUser.UserRoles.Select(x => x.Roles.RoleName).ToList(),
+                            Roles = existingUser.UserRoles.Select(x => x.Role.RoleName).ToList(),
                             IsActive = existingUser.IsActive
                         };
                     }
@@ -132,7 +131,6 @@ namespace Template.Business.Security
                 }
                 catch (Exception e)
                 {
-                    Logger.LogEvent("GetIdentity", e);
                     return new CustomIdentity(false, String.Empty);
                 }
             }

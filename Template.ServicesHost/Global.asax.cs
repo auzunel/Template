@@ -1,21 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
+using System.Threading;
 using System.Web;
 using System.Web.Http;
-using System.Web.Routing;
 using System.Web.Script.Serialization;
 using System.Web.Security;
+using System.Web.SessionState;
 using Template.Business.Security;
 using Template.Services.Config;
 using Template.Services.Security;
+using Template.Services.Support;
 
 namespace Template.ServicesHost
 {
     public class WebApiApplication : System.Web.HttpApplication
     {
-        protected void Application_Start()
+
+        protected void Application_Start(object sender, EventArgs e)
         {
             var config = GlobalConfiguration.Configuration;
 
@@ -34,65 +36,59 @@ namespace Template.ServicesHost
 
         }
 
+        protected void Application_AuthenticateRequest(object sender, EventArgs e)
+        {
+            var cookieName = FormsAuthentication.FormsCookieName;
+            HttpCookie authCookie = Request.Cookies[cookieName];
+
+            if (authCookie == null)
+                return;
+
+            FormsAuthenticationTicket authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+            var serializer = new JavaScriptSerializer();
+            var userData = (IdentityModel)serializer.Deserialize(authTicket.UserData, typeof(IdentityModel));
+
+            if (!userData.IsAuthenticated || !userData.IsActive)
+            {
+                Request.Cookies.Clear();
+                return;
+            }
+
+            var identity = new CustomIdentity(userData.IsAuthenticated, userData.Name)
+            { 
+                IsActive = userData.IsActive,
+                LastPasswordChange = userData.LastPasswordChange,
+                CreatedOn = userData.CreatedOn,
+                IsLockedOut = userData.IsLockedOut,
+                Roles = userData.Roles,
+                UserId = userData.UserId,
+                Email = userData.Email,
+                RememberMe = userData.RememberMe
+            };
+
+            var principal = new CustomPrincipal(identity);
+
+            HttpContext.Current.User = principal;
+            Thread.CurrentPrincipal = principal;
+
+        }
+
         protected void Application_Error(object sender, EventArgs e)
         {
             var context = HttpContext.Current;
             var exception = context.Server.GetLastError();
 
-            //var logger = LogManager.GetCurrentClassLogger();
-            //logger.Error(exception.Message, exception);
+            Logger.LogEvent("Global.asax", exception);
         }
 
-        protected void Application_AuthenticateRequest(object sender, EventArgs e)
+        protected void Session_End(object sender, EventArgs e)
         {
-            //var cookieNameHeader = Request.Headers.Get("X-CookieName");
-            var cookieNameHeader = FormsAuthentication.FormsCookieName;
 
-            if (string.IsNullOrWhiteSpace(cookieNameHeader))
-            {
-                return;
-            }
-
-            var authCookie = Request.Cookies[cookieNameHeader];
-            if (authCookie == null)
-            {
-                return;
-            }
-
-            var authTicket = FormsAuthentication.Decrypt(authCookie.Value);
-
-            var principal = CreatePrincipalFromCookie(authTicket);
-
-            if (principal == null)
-            {
-                return;
-            }
-
-            if (((CustomIdentity)principal.Identity).IsActive == false)
-            {
-                Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                return;
-            }
-
-            Context.User = principal;
         }
 
-        private static CustomPrincipal CreatePrincipalFromCookie(FormsAuthenticationTicket ticket)
+        protected void Application_End(object sender, EventArgs e)
         {
-            var serializer = new JavaScriptSerializer();
 
-            Dictionary<string, object> userData = serializer.Deserialize<dynamic>(ticket.UserData);
-
-            var identityValues = (Dictionary<string, object>)userData["Identity"];
-
-            var name = identityValues["Name"].ToString();
-
-            if (CustomPrincipal.Load(name))
-            {
-                return (CustomPrincipal)HttpContext.Current.User;
-            }
-
-            return null;
         }
     }
 }

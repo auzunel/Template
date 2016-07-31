@@ -30,8 +30,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Template.Repository", "Temp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Template.WebApp", "Template.WebApp\Template.WebApp.csproj", "{B1D6AD72-F30E-4B9A-A073-5E568B460C7F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Template.ServiceClient", "Template.ServiceClient\Template.ServiceClient.csproj", "{0EED3425-23A9-48BA-98C7-11F5B6B32767}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -106,16 +104,6 @@ Global
 		{B1D6AD72-F30E-4B9A-A073-5E568B460C7F}.Release|ARM.ActiveCfg = Release|Any CPU
 		{B1D6AD72-F30E-4B9A-A073-5E568B460C7F}.Release|x64.ActiveCfg = Release|Any CPU
 		{B1D6AD72-F30E-4B9A-A073-5E568B460C7F}.Release|x86.ActiveCfg = Release|Any CPU
-		{0EED3425-23A9-48BA-98C7-11F5B6B32767}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0EED3425-23A9-48BA-98C7-11F5B6B32767}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0EED3425-23A9-48BA-98C7-11F5B6B32767}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{0EED3425-23A9-48BA-98C7-11F5B6B32767}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{0EED3425-23A9-48BA-98C7-11F5B6B32767}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{0EED3425-23A9-48BA-98C7-11F5B6B32767}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0EED3425-23A9-48BA-98C7-11F5B6B32767}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0EED3425-23A9-48BA-98C7-11F5B6B32767}.Release|ARM.ActiveCfg = Release|Any CPU
-		{0EED3425-23A9-48BA-98C7-11F5B6B32767}.Release|x64.ActiveCfg = Release|Any CPU
-		{0EED3425-23A9-48BA-98C7-11F5B6B32767}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -127,6 +115,5 @@ Global
 		{396FD184-BE46-4E1E-858F-4000FE04EC85} = {E13670DA-368A-47AF-BC9A-008284E48CB5}
 		{F8DC4448-C963-47D8-8AE3-8D38835FC652} = {BBA3E58C-947A-432B-8026-F7C116309E08}
 		{B1D6AD72-F30E-4B9A-A073-5E568B460C7F} = {9342F9AD-4724-42FB-BE5E-BE46A1199667}
-		{0EED3425-23A9-48BA-98C7-11F5B6B32767} = {E13670DA-368A-47AF-BC9A-008284E48CB5}
 	EndGlobalSection
 EndGlobal

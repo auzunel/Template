@@ -4,11 +4,11 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="c66f8e62639b428b8dbcc6b7c1ddfac7" Name="Diagram1">
-        <EntityTypeShape EntityType="TemplateModel.Roles" Width="1.5" PointX="3.75" PointY="0.75" IsExpanded="true" />
+      <Diagram DiagramId="6e14cfd8c19842da89b310b98e95ba82" Name="Diagram1">
+        <EntityTypeShape EntityType="TemplateModel.Role" Width="1.5" PointX="3.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="TemplateModel.UserMembership" Width="1.5" PointX="3" PointY="4.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="TemplateModel.UserRole" Width="1.5" PointX="6" PointY="5" IsExpanded="true" />
         <EntityTypeShape EntityType="TemplateModel.User" Width="1.5" PointX="0.75" PointY="4.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="TemplateModel.UserManagement" Width="1.5" PointX="3" PointY="4.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="TemplateModel.UserRoles" Width="1.5" PointX="6" PointY="5" IsExpanded="true" />
         <AssociationConnector Association="TemplateModel.FK_UserRoles_Roles" ManuallyRouted="false" />
         <AssociationConnector Association="TemplateModel.FK_UserManagement_User" ManuallyRouted="false" />
         <AssociationConnector Association="TemplateModel.FK_UserRoles_Users" ManuallyRouted="false" />

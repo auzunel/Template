@@ -12,20 +12,13 @@ namespace Template.Repository
     using System;
     using System.Collections.Generic;
     
-    public partial class UserManagement
+    public partial class UserRole
     {
         public int Id { get; set; }
         public System.Guid UserId { get; set; }
-        public string PasswordHash { get; set; }
-        public string PasswordSalt { get; set; }
-        public bool IsLocked { get; set; }
-        public int WrongAttempt { get; set; }
-        public System.DateTime CreatedOn { get; set; }
-        public System.Guid CreatedBy { get; set; }
-        public Nullable<System.DateTime> ModifiedOn { get; set; }
-        public Nullable<System.Guid> ModifiedBy { get; set; }
-        public byte[] Timestamp { get; set; }
+        public int RoleId { get; set; }
     
+        public virtual Role Role { get; set; }
         public virtual User User { get; set; }
     }
 }
